@@ -1,0 +1,26 @@
+.app {
+  display: flex;
+  box-sizing: border-box; 
+  width: 100vw;
+  height: 100vh;  
+  padding: 20px;
+
+}
+
+.scanline-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* Ensures it doesn't block interactions */
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(10, 87, 42, 0.5), /* The visible line */
+      rgba(50, 75, 17, 0.5) 0.5px, /* Line thickness */
+      transparent 1px, /* Space between lines */
+    	transparent 3px /* Total height of the repeating unit */
+    );
+    z-index: 9999; /* Make sure it stays on top */
+
+  }
