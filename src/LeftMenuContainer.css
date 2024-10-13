@@ -1,0 +1,78 @@
+
+.left-UI-container {
+    display: flex;
+    box-sizing: border-box; 
+    flex-direction: column; /* Stack items vertically */
+
+    height: 100%;
+    width: 20%;
+     
+}
+
+.left-UI-container > div {
+    /*border: 2px solid rgb(117, 190, 33);    */    
+    margin: 5px 0px;
+    --left-container-UI-font-size: 12px;
+    font-size: var(--left-container-UI-font-size);
+
+}
+
+.left-top-menu-buttons-container {
+    height: 5%;
+
+    display: flex; /* Flexbox layout */
+    box-sizing: border-box; /* calculate h/w including padding and border*/
+
+    align-items: center; /* Center buttons vertically */
+    padding-left: 5px ;
+    /* width: 100%; /* Ensure the buttons take full width of the container */
+}
+
+.left-menu-button {
+    display: inline-block ; /* allows buttons to fit snugly around contents rather than fill the space like flex */
+    box-sizing: border-box; 
+
+    padding: 2.5px 15px;
+    margin-right: 5px;
+
+    border: none; /* Remove border */
+    background-color: transparent;
+
+    
+    --menu-button-font-size: 13px;
+    font-family: inherit; 
+    color: inherit;
+    font-size: var(--menu-button-font-size);
+    font-weight: 700;
+
+    cursor: pointer;
+
+    
+}
+
+.left-menu-button:hover {
+    background-color: #727a4d9c; 
+}
+
+.left-menu-button:active {  /*on click (only when clicked)*/
+    background-color: #727a4d9c;
+    color: black;
+}
+
+
+.left-menu-button.active {  /*when clicked (persists after click)*/
+    background-color: #9ee246;
+    color: black;
+}
+
+.left-main-info-container {
+    flex-grow: 1; /* Allow this div to grow and shrink */
+    flex-shrink: 1; /* Allow this div to shrink */
+    min-height: 20%; /* Minimum height for the main info container */
+    padding: 5px 10px;
+
+}
+
+.left-bottom-info-container {
+    height: 10%;
+}

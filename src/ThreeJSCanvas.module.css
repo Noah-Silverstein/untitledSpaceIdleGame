@@ -1,0 +1,10 @@
+
+.canvasContainer {
+    box-sizing: border-box; 
+    /*BLUR GIVES A NICER EFFECT IMO, no blur is too sharp*/
+	/*filter: blur(0.6px);*/
+    width: 80%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}

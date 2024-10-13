@@ -1,0 +1,27 @@
+
+CHANGE CSS FILES
+    change css files to 1 global.css and the rest to xxxxx.modules.css. Modules allow for scoped css and avoids name conflicts
+
+CAMERA DOES WEIRD STUFF WHEN SELECTING A planet
+
+
+RESEARCH TRE1. 
+    Research Tree Data Structure
+
+   
+    array of objects to represent the nodes, where each node contains:
+
+        id: A unique identifier for the node.
+        name: The name of the research node.
+        cost: The cost of unlocking the research.
+        dependencies: An array of node IDs that need to be unlocked before this node can be unlocked.
+        unlocked: A boolean to track whether this research is unlocked or not.
+
+PLANETS
+    hill radius is only for single star systems?????
+
+
+STARS
+    EARLY/MID/LATE?
+
+    Tidal lock zone?

@@ -1,0 +1,65 @@
+
+
+NOTES ON IMPLEMENTATION
+
+CSS
+modules.css
+    css modules creates locally scoped styles (contrasted with the global css styles) 
+    allows for modularity 
+inline styling is slower than modules 
+
+REACT 
+learn more 
+components mounting/unmounting?
+how do components handle states?
+
+NOTES ON GAMEPLAY & DESIGN
+Not scientific but marginally inspired by scientific concepts. Mostly I like learning about space things so it's fun
+to add formulas based on real life natural laws to create and bound the game environment. Even though these laws create 
+'unrealistic' scenerios (because of the simplifications), I still found it fun to implement them in this way.
+
+GAME 
+- NO HARD FAILURE STATES - 
+
+story framework?
+    crashed colony ship, you are AI, AI purged lots of data, colonist memory wipe, farming->industry->planet orbit-> local space->solar system-> FORK
+
+ forks?
+ resets/prestige/...
+    new star (copy AI and delete local AI if not deleting chance first colony becomes hostile?)
+    new quadrant
+    new galaxy
+    new universe
+
+gameloop?
+
+ gather resources -> build buildings -> research? -> increase resource gathering and build options -> gather new resources -> ...loop
+
+ science?
+    new buildings
+    new projects
+    new efficiencies
+    new game concepts (farming -> hydroponics)
+    flat efficiency boosts
+    world info 
+      scan planet reveals resources
+      resources underground? 
+      scan foreign stars for reset possibilities
+    research alien tech?
+ 
+ trade?
+    resources are shared per planet? planet-moon? solar system? galaxy? universe?
+      perhaps research required before shared resources? (ex: before researching space transport tech you need to transport resources from moon to earth, 
+      after building spaceport/elevator/mass driver/research concept... the resources of planet and moon are aggregated (no need for trade routes)
+      same for solar system (ex antimatter drive), and then for galaxy (warp drive))
+
+ combat?
+  probably not? NO HARD FAILURE STATES!
+  maybe influence via military might opens possibilities (military vs diplomacy)
+  piracy?
+
+ people?
+    happiness?
+    health?
+    genetic modification?
+    population? (global? per planet?system?galaxy?universal?)
