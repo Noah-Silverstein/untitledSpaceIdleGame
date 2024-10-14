@@ -88,6 +88,7 @@ function modifyColor(color: THREE.Color, modifier: number): THREE.Color {
 }
 
 function getPlanetColor(planet: Planet){
+    console.log(planet.name, "colored this planet")
     return rgbStringToTHREEColor('rgb(43, 230, 14)');
 }
 
@@ -173,12 +174,13 @@ export function wavelengthToRGB(wavelength: number): { r: number, g: number, b: 
 }
 
 function scaleStarSize(starRadius: number): number{
-    return 0.1
+    const drawnRadius = 0*starRadius + 0.1
+    return drawnRadius
 }
 
 function scalePlanetSize(planetRadius: number): number {
-    
-    return 0.3
+    const drawnRadius = 0*planetRadius + 0.3
+    return drawnRadius
 }
 
 export function scalePlanetOrbitalDistance(realOrbitalDistance: number): number {

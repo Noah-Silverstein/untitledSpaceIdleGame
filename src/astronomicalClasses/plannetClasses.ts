@@ -22,6 +22,7 @@ function generatePlanetName(): string {
 * @extends PlanetaryMassParams
 */
 export interface PlanetParams extends PlanetaryMassParams {
+				radius: number
 				/**
 			 * The astronomical body around which the planet orbits.
 			 * 
@@ -95,7 +96,6 @@ export class Atmosphere {
 export class Planet extends PlanetaryMassObject {
     public atmosphere: Atmosphere | undefined;
 		public interiorLayers: number[];
-		public radius: number;
     public orbitalDistance: number;
 		public orbitalPeriod: number;	//
 		public position: PolarCoordinate

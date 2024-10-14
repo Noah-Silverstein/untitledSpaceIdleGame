@@ -44,8 +44,8 @@ import { PolarCoordinate } from "./polarCoordinate.ts";
 */
 //α  
 export interface AstronomicalObjectParams {
-    name?: string;
-    position?: PolarCoordinate //radius, theta: angle from the Z-axis (0° to 180°), phi: angle in the X-Y plane ( 0° to 360°).
+    name: string;
+    position: PolarCoordinate //radius, theta: angle from the Z-axis (0° to 180°), phi: angle in the X-Y plane ( 0° to 360°).
 
 }
 //α-A-1
@@ -60,12 +60,13 @@ export interface PlanetaryMassParams extends AstronomicalBodyParams {
   (ex: planets, galaxies, nebulae, stars, blackholes, double planets, comets, ...)
 -----------------------------------*/
 export abstract class AstronomicalObject {
-    public name: string
-    public position?: PolarCoordinate
 
-    constructor(params: AstronomicalObjectParams = {}){
-        this.name = params.name ?? "Celestial Object"
-        this.position = params.position ?? {r:0, t:0, p:0}
+    name: string;
+    position: PolarCoordinate;
+
+    constructor(params: AstronomicalObjectParams){
+        this.name = params.name 
+        this.position = params.position 
     }
 }
 
@@ -80,8 +81,8 @@ yes: planets, stars, moons, black holes, yo mama
 -----------------------------*/
 //α-A
 export interface AstronomicalBodyParams extends AstronomicalObjectParams {
-    mass?: number;
-    radius?: number;
+    mass: number;
+    radius: number;
     naturalSatellites?: AstronomicalBody[];
     parentBody?: AstronomicalBody;
 }
@@ -99,7 +100,8 @@ export interface AstronomicalBodyParams extends AstronomicalObjectParams {
  */
 
 export abstract class AstronomicalBody extends AstronomicalObject{
-    public mass: number | undefined = undefined;
+
+    public mass: number;
     public radius: number | undefined = undefined;
 	public naturalSatellites: AstronomicalBody[] = []; //redundant declaration but kept for readability 
 	public parentBody: AstronomicalBody | undefined = undefined
@@ -185,8 +187,10 @@ MOONS, PLANETS, ASTEROIDS, ...
 -----------------------*/
 export class PlanetaryMassObject extends AstronomicalBody{
     //what methods and variables make sense here?
+    public radius: number
     constructor(params: PlanetaryMassParams){
         super(params);
+        this.radius = params.radius
     }
 
 }

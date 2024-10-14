@@ -265,7 +265,7 @@ class MainSequenceStar extends Star {
 acceptable ranges of A-Type Main Sequence Stars Key Parameters Based on Luminosity
 
 -------------------------------------------*/
-class AVStar extends MainSequenceStar {
+export class AVStar extends MainSequenceStar {
 	spectralType: string =  'A-Type';
 	
 	constructor(params:StarParams){
@@ -279,6 +279,9 @@ class AVStar extends MainSequenceStar {
 acceptable ranges of K-Type Main Sequence Stars mass based on 
 
 -------------------------------------------*/
+interface KVStarParams extends MainSequenceParams{
+	
+}
 /**
  * Represents a K-type main-sequence star (K-V), a specific type of star in the Hertzsprung-Russell diagram.
  * Extends the MainSequenceStar class.
@@ -297,7 +300,7 @@ export class KVStar extends MainSequenceStar {
 	spectralType: string =  'K-Type';
 	planetLikelyhoodRangeArr: number[] = this.planetLikelyhoodRanges['kType']; 
 	
-	constructor(params:StarParams){
+	constructor(params:KVStarParams){
 		super(params)
 		// ** GEN RANDOM MASS **
 		this.mass = params.mass 
@@ -335,7 +338,7 @@ export class KVStar extends MainSequenceStar {
                         VII - WHITE DWARF
     KEY: It's a little complicated, just trust me bro
 -------------------------------------------*/
-class WhiteDwarf extends Star {
+export class WhiteDwarf extends Star {
 	constructor(params: StarParams){
 		super(params)
 		this.mass = params.mass ?? randomInteger(1,10)

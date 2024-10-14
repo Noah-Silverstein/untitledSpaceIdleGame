@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
-import { disposeMesh, drawCircle, drawPlanet, drawStar, MeshContainer, rgbStringToTHREEColor, scalePlanetOrbitalDistance, wavelengthToRGB } from "./drawingUtils";
+import { disposeMesh, drawPlanet, drawStar, MeshContainer, scalePlanetOrbitalDistance } from "./drawingUtils";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import styles from './ThreeJSCanvas.module.css'
-import { KVStar, Star } from "./astronomicalClasses/Stars";
-import { Planet, Terran } from "./astronomicalClasses/plannetClasses";
+import { Star } from "./astronomicalClasses/Stars";
+import { Planet } from "./astronomicalClasses/plannetClasses";
 import { PlanetarySystem } from "./generators/systemGenerator";
 import { AstronomicalBody } from "./astronomicalClasses/planetarySystemUtils";
 import { PolarCoordinate } from "./astronomicalClasses/polarCoordinate";
