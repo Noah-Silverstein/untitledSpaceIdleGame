@@ -26,7 +26,7 @@ I haven't researched this too much but I'm just freeballing this based on MK (an
 ranges are based on the diagram on this site http://www.atlasoftheuniverse.com/startype.html
 
 */
-import { MAX_ORBITAL_RADIUS } from "./globalVars.ts";
+import * as UNI from "./globalVars.ts";
 import { PolarCoordinate } from "./polarCoordinate.ts";
 
 
@@ -60,11 +60,12 @@ export interface PlanetaryMassParams extends AstronomicalBodyParams {
   (ex: planets, galaxies, nebulae, stars, blackholes, double planets, comets, ...)
 -----------------------------------*/
 export abstract class AstronomicalObject {
-
+    //** REQUIRED **//
     name: string;
     position: PolarCoordinate;
 
     constructor(params: AstronomicalObjectParams){
+        //** ASSIGN PROPERTIES **//
         this.name = params.name 
         this.position = params.position 
     }
@@ -81,11 +82,12 @@ yes: planets, stars, moons, black holes, yo mama
 -----------------------------*/
 //α-A
 export interface AstronomicalBodyParams extends AstronomicalObjectParams {
-    mass: number;
-    radius: number;
+    realMass: number;
+    realRadius: number;
     naturalSatellites?: AstronomicalBody[];
     parentBody?: AstronomicalBody;
 }
+export type WithoutRealValues<T> = Omit<T, 'realMass' | 'realRadius'>;
 
 /**
  * Represents an astronomical body such as a planet, moon, star, blackhole
@@ -100,18 +102,26 @@ export interface AstronomicalBodyParams extends AstronomicalObjectParams {
  */
 
 export abstract class AstronomicalBody extends AstronomicalObject{
-
+    //** REQUIRED **//
     public mass: number;
-    public radius: number | undefined = undefined;
-	public naturalSatellites: AstronomicalBody[] = []; //redundant declaration but kept for readability 
+    public radius: number;
+    //** OPTIONAL **//
 	public parentBody: AstronomicalBody | undefined = undefined
+	public naturalSatellites: AstronomicalBody[]; 
+    //** CALCULATED **//
+    public density: number;
 
     constructor(params: AstronomicalBodyParams){
         super(params)
-        this.mass = params.mass      
-        this.radius = params.radius
-		this.naturalSatellites = params.naturalSatellites ?? [];
-		this.parentBody = params.parentBody 
+        //** ASSIGN PROPERTIES **//
+        this.mass = params.realMass      
+        this.radius = params.realRadius
+        //** ASSIGN OPTIONAL PARAM PROPERTIES **//
+        this.parentBody = params.parentBody 
+        params.naturalSatellites ? this.naturalSatellites = params.naturalSatellites : this.naturalSatellites = []
+        //** CALCULATE PROPERTIES **//
+        this.density = this.mass/this.radius
+         
     }
 	/**
      * Adds one or more natural satellites (e.g., moons, or planet) to this astronomical body.
@@ -145,36 +155,40 @@ export abstract class AstronomicalBody extends AstronomicalObject{
     /**
      * Calculates the hill radius of the Body with respect to the parentBody
      * @returns The Hill radius in AU
+     * Hill radius stable orbits are within 0.33.. _ 0.5 https://en.wikipedia.org/wiki/Hill_sphere
      */
     protected calculateHillRadius(): number {
-        // Hill radius formula
         if (this.parentBody){
             if(this.parentBody.mass && this.parentBody.mass> 1 && this.mass && this.mass > 1){
                 if(this.position && this.position.r > 0){
                     return this.position.r * Math.pow(this.mass / (3 * this.parentBody.mass), (1/3))
                 } else {
-                    console.log(`${this.name} does not have a position OR it's orbital radius = 0. HillRadius is set to MAX_ORBITAL_RADIUS`)
-                    return MAX_ORBITAL_RADIUS
+                    console.warn(`${this.name} does not have a position OR it's orbital radius = 0. HillRadius is set to MAX_PLANETARY_ORBITAL_DISTANCE`)
+                    debugger
+                    return UNI.MAX_PLANETARY_ORBITAL_DISTANCE
                 }
-            } else {
-                throw new Error("ParentBody or This Body has no mass")
-            }
-        } else {
-            throw new Error("Can't calculate hillRadius if no ParentBody");
-        }   
+            } 
+        }
+        console.log("__ERROR__in calculate hill radius for: ", this.name)
+        return 0
     }
     /**
      * Given A satellite body with mass and radius check what the minimum distance that body has to be in
      * order not to not get destroyed by tidal forces
      * @param {AstronomicalBody} satellite 
-     * @returns The Roche Limit for the given satellite for THIS body
+     * @returns The Roche Limit for the given satellite for THIS body in AU
      */
-    protected calculatedRocheLimit(satellite: AstronomicalBody):number{
+    public calcRigidRocheLimit(satellite: AstronomicalBody): number{
         if(this.mass && this.mass > 1 && satellite.mass && satellite.mass > 1 && satellite.radius){
-            return satellite.radius*Math.pow(2*this.mass/satellite.mass, 1/3)
+            let rochelimit = satellite.radius*Math.pow(2*this.mass/satellite.mass, 1/3)
+            return (rochelimit/UNI.ASTRO_UNIT)
         } else {
             throw new Error("Mass for primary or satellite doesn't exist OR satellite has no radius")
         }
+    }
+
+    protected estFluidRocheLimit(satellite: AstronomicalBody): number{
+        return 2.44*this.radius*Math.pow(2*this.density/satellite.density, 1/3)
     }
 }
 
@@ -187,10 +201,10 @@ MOONS, PLANETS, ASTEROIDS, ...
 -----------------------*/
 export class PlanetaryMassObject extends AstronomicalBody{
     //what methods and variables make sense here?
-    public radius: number
+    public radius: number //REAL VALUE
     constructor(params: PlanetaryMassParams){
         super(params);
-        this.radius = params.radius
+        this.radius = params.realRadius
     }
 
 }

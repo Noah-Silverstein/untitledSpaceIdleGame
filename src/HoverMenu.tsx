@@ -1,7 +1,8 @@
 import React from 'react';
 import styles from './HoverMenu.module.css';
-import { AstronomicalBody } from './astronomicalClasses/planetarySystemUtils';
-import { Planet } from './astronomicalClasses/plannetClasses';
+import { AstronomicalBody } from './astronomicalClasses/baseAstronomicalClasses';
+import { Star } from './astronomicalClasses/stars';
+import { Planet } from './astronomicalClasses/planet';
 
 interface HoverMenuProps {
   visible: boolean;
@@ -22,13 +23,27 @@ const HoverMenu: React.FC<HoverMenuProps> = ({ visible, content, position }) => 
       {content ? ( // Check if content is not null
         <>
           <div>{content.name}</div>
-          <div>mass: {content.mass}</div>
-          <div>radius: {content.radius}</div>
+          
           {content instanceof Planet && (
             <>
-                <div>temperature: {content.temperature}</div>
-                <div>orbital distance: {content.orbitalDistance}</div> 
-                <div>orbital period: {content.orbitalPeriod}</div> 
+                <div>mass: {content.earthMass.toFixed(2)}</div>
+                <div>radius: {content.earthRadius.toFixed(2)}</div>
+                <div>BBtemp: {(content.bBTemp - 273.15).toFixed(2)}</div>
+                <div>orbital distance: {content.orbitalDistance.toFixed(2)}</div> 
+                <div>orbital period: {content.orbitalPeriod.toFixed(2)}</div> 
+                <div>albedo: {content.albedo.toFixed(2)}</div> 
+
+
+            </>
+            )}
+            {content instanceof Star && (
+            <>  
+                <div>mass: {content.solarMass.toFixed(2)}</div>
+                <div>radius: {content.solarRadius.toFixed(2)}</div>
+                <div>temperature: {content.surfaceTemp.toFixed(2)}</div>
+                <div>luminosity: {content.luminosity.toFixed(2)}</div>
+                <div>spectral type: {content.spectralType}</div> 
+                <div>peak wavelength: {content.wavelengthPeak.toFixed(2)}</div> 
 
             </>
             )}

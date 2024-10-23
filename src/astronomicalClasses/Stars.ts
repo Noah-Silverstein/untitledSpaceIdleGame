@@ -1,4 +1,4 @@
-import { AstronomicalBody, AstronomicalBodyParams } from "./planetarySystemUtils";
+import { AstronomicalBody, AstronomicalBodyParams, WithoutRealValues } from "./baseAstronomicalClasses";
 import { randomInteger } from "./globalFuncts";
 import * as UNI from './globalVars'
 import { PolarCoordinate } from "./polarCoordinate";
@@ -36,7 +36,9 @@ function generateStarName(): string {
  * @property {number} [surfaceTemp] - The surface temperature of the star in Kelvin. Optional.
  * @property {AstronomicalBody[]} [naturalSatellites] - An array of natural satellites (e.g., planets) orbiting the star. Optional.
  */
-interface StarParams extends AstronomicalBodyParams {
+interface StarParams extends WithoutRealValues<AstronomicalBodyParams> {
+	solarRadius: number;
+	solarMass: number;
 	luminosity: number;
 	surfaceTemp: number;
 	naturalSatellites?: AstronomicalBody[];
@@ -55,31 +57,56 @@ interface StarParams extends AstronomicalBodyParams {
  * @param {number} [params.radius=undefined] - The radius of the star in meters, inherited from AstronomicalBody.
  * @param {number} [params.orbitalPeriod=0] - The orbital period in seconds, inherited from AstronomicalBody.
  */
-
 export abstract class Star extends AstronomicalBody {
-
+	public solarMass: number;
+	public solarRadius: number;
     public luminosity: number;	//in L☉, ei in solar luminosity
     public surfaceTemp: number;	//Kelvin
-    public wavelengthPeak: number = 0;	//peak wavelength in nm
-    public habitableZones?: Record<string,  number >;
+    public wavelengthPeak: number;	//peak wavelength in nm
+    public habitableZones: Record<string,  number >;
 	public spectralType?: string
-	protected planetLikelyhoodRanges?: Record<string,  number[] >
+	public hillSphere: number = 0	//-------------> change this or initialize stars to orbit around black hole center of galaxy
+	//initialize for 0 planet likelyhood
+	protected planetLikelyhoodRange: number[] = [Infinity]
+	protected planetOdds: number[] = [0]
 
 	constructor(params: StarParams){
-		super(params)
+		const realMass = params.solarMass*UNI.SOLAR_MASS
+		const realRadius = params.solarRadius*UNI.SOLAR_RADIUS
+		//** TRANSFORM MASS TO REAL MASS**/		
+		super({
+			realMass: realMass,
+			realRadius: realRadius,
+			...params
+		})
+		this.solarMass = params.solarMass
+		this.solarRadius = params.solarRadius
 		this.luminosity = params.luminosity
 		this.surfaceTemp = params.surfaceTemp
 		this.name = params.name ?? generateStarName()
+		this.habitableZones = this.calcHabitableZoneBoundaries(this.surfaceTemp)
+		this.wavelengthPeak = this.calcWaveLength(this.surfaceTemp)
 	}
-	/**
-	 * Effective Temp of Planet as BlackBody 
-	 * @param distance distance in meters to planet (if just calculating )
-	 * @param albedo amount of radiation that is reflected [0,1][all absorbed, all reflected]
-	 * @returns effective temp at distance for planet in K
-	 */
-	public estEffectiveTemp(distance:number, albedo:number){
-		return Math.pow((this.luminosity*UNI.SOLAR_LUMINOSITY * (1 - albedo)) / (16 * Math.PI * UNI.STEFAN_BOLTZMANN_CONSTANT * distance**2), 0.25);
+
+	public getPlanetOdds(distance: number): number {
+		// Check if the input arrays are of the same length + 1 for the added initial odds value
+		if (this.planetLikelyhoodRange.length + 1 !== this.planetOdds.length) {
+			throw new Error("kType length must be one less than odds length after adding initial odds." );
+		}
+	
+		// Iterate through the kType array to find the appropriate range
+		for (let i = 0; i < this.planetLikelyhoodRange.length; i++) {
+			// Check if the distance is less than the current kType value
+			if (distance < this.planetLikelyhoodRange[i]) {
+				// Return the corresponding odds
+				return this.planetOdds[i]; 
+			}
+		}
+	
+		// If the distance is greater than or equal to the last kType value, return the last odds
+		return this.planetOdds[this.planetOdds.length - 1]; // Return the last value for distances greater than the last kType
 	}
+	
 	/**
 	 * Calculates 'Conservative Habitable Zone' of a star (Provided Temp 2600 K ⩽Teff ⩽ 7200 K) 
 	 * 
@@ -101,20 +128,22 @@ export abstract class Star extends AstronomicalBody {
 	 * @returns luminosity in Solar Luminosity
 	 */
 	protected static estLuminosityFromMass(mass: number): number{
-		
+		let lumin: number
 		if (mass < 0.43){
-			return (0.23*Math.pow(mass, 2.3))
+			lumin = (0.23*Math.pow(mass, 2.3))
 		} else if (mass < 2) {
-			return (Math.pow(mass, 4))
+			lumin = (Math.pow(mass, 4))
 		} else if (mass < 55){
-			return (1.4*Math.pow(mass, 3.5))
+			lumin = (1.4*Math.pow(mass, 3.5))
 		} else {
-			return (32000*mass)
+			lumin = (32000*mass)
 		}
+
+		return lumin
 	}
 
 	protected calcWaveLength(surfaceTemp: number): number{
-			return Math.round((2.897/surfaceTemp)*10e5*100)/100 //nm
+			return (2.897/surfaceTemp)*10e5 //nm
 	}
 
 	/**
@@ -151,7 +180,7 @@ export abstract class Star extends AstronomicalBody {
 	// CONSERVATIVE : moist-green house - maximum greenhouse
 	// OPtimistic : recent Venus - Early Mars
 	//https://iopscience.iop.org/article/10.1088/0004-637X/765/2/131/meta
-	protected getHabitableZoneBoundaries(surfaceTemp: number): Record<string,  number> {
+	protected calcHabitableZoneBoundaries(surfaceTemp: number): Record<string,  number> {
 			const boundaries = {
 							"Recent Venus": {
 											S_effsun: 1.7753,
@@ -201,24 +230,27 @@ export abstract class Star extends AstronomicalBody {
 	}
 }
 
-interface MainSequenceParams extends StarParams{}
+interface MainSequenceParams extends StarParams{
+	spectralType: string
+}
 /* [α-A-2.1] ----------------------
                         V -	MAIN SEQUENCE
     KEY: It's a little complicated, just trust me bro
 
     ----------------------------*/
 class MainSequenceStar extends Star {
+	public spectralType: string;
 	public luminosityClass: string = 'V';
-	protected planetLikelyhoodRanges: Record<string,  number[] > = UNI.MAIN_SEQUENCE_PLANET_LIKELIHOOD;
 
 	constructor(params: MainSequenceParams){
 		super(params)
-
-		this.wavelengthPeak = this.calcWaveLength(this.surfaceTemp)
-		this.habitableZones = this.getHabitableZoneBoundaries(this.surfaceTemp) //calculation based on https://www.planetarybiology.com/calculating_habitable_zone.html
-
+		this.spectralType = params.spectralType
+		this.planetLikelyhoodRange = UNI.MAIN_SEQUENCE_PLANET_LIKELIHOOD[this.spectralType];
+		this.planetOdds = UNI.ODDS_FOR_PLANET_MSQ
 	}
-	static genRandom(): MainSequenceStar {
+	//-------------------just random shit------------------
+	public static genRandom(): MainSequenceStar {
+		const spectralType = 'K-type'
 		const mss = randomInteger(1,10);
 		const lumin = this.estLuminosityFromMass(mss)
 		const rdius = Math.pow(mss,0.8)
@@ -226,37 +258,18 @@ class MainSequenceStar extends Star {
 		const nme = 'V' + generateStarName()
 
 		return new MainSequenceStar({
-			mass:mss,
-			luminosity: lumin,
-			radius:rdius,
-			surfaceTemp:srfaceTemp,
+			
 			name:nme,
-			position: new PolarCoordinate(0,0,0)
+			spectralType: spectralType,
+			position: new PolarCoordinate(0,0,0),
+			solarMass:mss,
+			solarRadius:rdius,
+			luminosity: lumin,
+			surfaceTemp:srfaceTemp,
 
 		})
 	}
-	/**
-	 * Odds of finding a planet based on distance and spectral type
-	 * @param distance Distance from star in AU
-	 * @param type Spectral type ex: aType
-	 * @returns odds of finding a planet given a distance in AU
-	 */
-	public oddsOfPlanet(distance: number, type: string){
-		const planetRangeArr = this.planetLikelyhoodRanges[type]
-		const odds = UNI.PLANET_LIKELYHOOD_ODDS
-
-		if (distance < planetRangeArr[0]){
-			return 0
-		} else if (distance > planetRangeArr[0] && distance < planetRangeArr[1]){
-			return odds[0]
-		} else if (distance > planetRangeArr[1] && distance < planetRangeArr[2]){
-			return odds[1]
-		} else if (distance > planetRangeArr[2] && distance < planetRangeArr[3]){
-			return odds[2]
-		}else if (distance > planetRangeArr[3]){
-			return odds[3]
-		}
-	}
+	
 }
 
 /* [α-A-2.1.a] --------------------------
@@ -265,12 +278,16 @@ class MainSequenceStar extends Star {
 acceptable ranges of A-Type Main Sequence Stars Key Parameters Based on Luminosity
 
 -------------------------------------------*/
+interface AVStarParams extends Omit<MainSequenceParams, 'spectralType'>{
+}
 export class AVStar extends MainSequenceStar {
-	spectralType: string =  'A-Type';
-	
-	constructor(params:StarParams){
-			super(params)
-			this.mass = params.mass ?? randomInteger(175, 220)/100
+
+	constructor(params:AVStarParams){
+		super({
+			spectralType: 'aType',
+			...(params.name ? {name: params.name}: {name: ('A-type' + 'MSQ' + generateStarName())}),
+			...params
+		})
 	}
 }
 /* [α-A-2.1.a] --------------------------
@@ -279,7 +296,7 @@ export class AVStar extends MainSequenceStar {
 acceptable ranges of K-Type Main Sequence Stars mass based on 
 
 -------------------------------------------*/
-interface KVStarParams extends MainSequenceParams{
+interface KVStarParams extends Omit<MainSequenceParams, 'spectralType'>{
 	
 }
 /**
@@ -288,7 +305,7 @@ interface KVStarParams extends MainSequenceParams{
  *
  * @class KVStar
  * @extends MainSequenceStar
- * @param {StarParams} params - Parameters for configuring the K-V star.
+ * @param {MainSequenceStar} params - Parameters for configuring the K-V star.
  * @param {number} [params.mass] - The mass of the K-V star, in solar masses (L☉), which is constrained between 0.6 and 0.9. If no value is provided, a random value in this range is selected.
  * @param {number} [params.luminosity] - The luminosity of the star, relative to the Sun's luminosity (L☉). Optional, as it is derived from mass.
  * @param {number} [params.surfaceTemp] - The surface temperature of the star, in Kelvin. Optional, as it is derived from mass.
@@ -297,33 +314,33 @@ interface KVStarParams extends MainSequenceParams{
  */
 
 export class KVStar extends MainSequenceStar {
-	spectralType: string =  'K-Type';
-	planetLikelyhoodRangeArr: number[] = this.planetLikelyhoodRanges['kType']; 
 	
 	constructor(params:KVStarParams){
-		super(params)
-		// ** GEN RANDOM MASS **
-		this.mass = params.mass 
-		// allow out of bounds masses?
-		if ((this.mass < UNI.K_TYPE_MAIN_SEQUENCE_MASS_LOWERBOUND) || (this.mass > UNI.K_TYPE_MAIN_SEQUENCE_MASS_UPPERBOUND)) {
-			console.log(`___WARNING: MASS OF ${this.mass} IS OUT OF REGULAR K-TYPE MAIN-SEQUENCE-STAR BOUNDS____`)
-		}
-		// ** GEN RANDOM NAME **
-		this.name = params.name ?? this.spectralType.concat('-', this.luminosityClass, generateStarName())
-
+		//pass spectral Type and naming through to parent class
+		super({
+			spectralType: 'kType',
+			...params	
+			//params required: solarmass, solarradius, position, luminosity, surfaceTemp
+		})
 	}
-
+	/**
+	 * 	Generate K-type Main Sequence Star
+	 * @param genName Name of the star. Optional
+	 * @returns K-Type V Star mass in Solar Mass, Radius in Solar Radius , 
+	 * Luminosity in Solar Luminosity Surface Temp in Kelvin
+	 * 
+	 */
 	static genRandom(genName?:string): KVStar {
 		const mss = randomInteger(100*UNI.K_TYPE_MAIN_SEQUENCE_MASS_LOWERBOUND, 100*UNI.K_TYPE_MAIN_SEQUENCE_MASS_UPPERBOUND)/100 //sizes hard coded from source https://en.wikipedia.org/wiki/K-type_main-sequence_star
-		const lumin = this.estLuminosityFromMass(mss)
+		const lumin = this.estLuminosityFromMass(mss) //in solar lumin
 		const rdius = Math.pow(mss,0.8)
 		const srfaceTemp = this.calcSurfaceTemp(lumin, rdius)
-		const nme = genName ?? 'K-type-V' + generateStarName()
+		const nme = genName ?? ('K-type_' + '_MSQ_' + generateStarName())
 
 		return new KVStar({
-			mass:mss,
+			solarMass:mss,
 			luminosity: lumin,
-			radius:rdius,
+			solarRadius:rdius,
 			surfaceTemp:srfaceTemp,
 			name:nme,
 			position: new PolarCoordinate(0,0,0)
@@ -341,6 +358,6 @@ export class KVStar extends MainSequenceStar {
 export class WhiteDwarf extends Star {
 	constructor(params: StarParams){
 		super(params)
-		this.mass = params.mass ?? randomInteger(1,10)
+		this.solarMass = params.solarMass ?? randomInteger(1,10)
 	}
 }

@@ -8,6 +8,9 @@ modules.css
     allows for modularity 
 inline styling is slower than modules 
 
+GENERICS
+   <TGenericName> helps typing when you want to specify generic type
+
 REACT 
 learn more 
 components mounting/unmounting?

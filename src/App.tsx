@@ -4,8 +4,10 @@ import ThreeJSCanvas from './ThreeJSCanvas';
 import LeftMenuContainer from './LeftMenuContainer';
 import styles from './App.module.css'
 import HoverMenu from './HoverMenu';
-import { AstronomicalBody } from './astronomicalClasses/planetarySystemUtils';
+import { AstronomicalBody } from './astronomicalClasses/baseAstronomicalClasses';
 import FPSMonitor from './FPSMonitor';
+import ThreeJSCanvasNew from './ThreeJSCanvasNew';
+
 function App() {
   const [selectedBody, setSelectedBody] = useState<AstronomicalBody | null>(null);
   const [menuPosition, setMenuPosition] = useState<{ top: string; left: string }>({ top: '10px', left: '10px' });
@@ -26,13 +28,13 @@ function App() {
   return (
     <div className={styles.app}>
       <LeftMenuContainer  />
-      <ThreeJSCanvas DEVMODE ={true} onMeshSelect={handleMeshSelect} onBackgroundSelect={handleCloseMenu} /> 
+      <ThreeJSCanvasNew DEVMODE ={true} onMeshSelect={handleMeshSelect} onBackgroundSelect={handleCloseMenu} /> 
       <HoverMenu
         visible={selectedBody !== null}
         content={selectedBody}
         position={menuPosition}
       />
-      {/* FPS Monitor */}
+       {/*FPS Monitor */}
       <FPSMonitor />
     </div>
   );

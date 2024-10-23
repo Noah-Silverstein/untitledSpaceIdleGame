@@ -3,11 +3,10 @@ import * as THREE from "three";
 import { disposeMesh, drawPlanet, drawStar, MeshContainer, scalePlanetOrbitalDistance } from "./drawingUtils";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import styles from './ThreeJSCanvas.module.css'
-import { Star } from "./astronomicalClasses/Stars";
-import { Planet } from "./astronomicalClasses/plannetClasses";
-import { PlanetarySystem } from "./generators/systemGenerator";
-import { AstronomicalBody } from "./astronomicalClasses/planetarySystemUtils";
-import { PolarCoordinate } from "./astronomicalClasses/polarCoordinate";
+import { Star } from "./astronomicalClasses/stars";
+import { PlanetarySystem } from "./astronomicalClasses/planetarySystem";
+import { AstronomicalBody } from "./astronomicalClasses/baseAstronomicalClasses";
+import { Planet } from "./astronomicalClasses/planet";
 
 interface ThreeJSCanvasProps {
     DEVMODE?: boolean;
@@ -15,8 +14,15 @@ interface ThreeJSCanvasProps {
     onBackgroundSelect: () => void;
   }
 
+/**
+ * TO/SHOULD DO:
+ *  INITIALIZE RENDERER
+ *  ATTACH RENDERER TO CANVASREF
+ *  MANAGE RESIZING
+ *  HANDLE SCENE SWITCHING
+ */
 const ThreeJSCanvas: React.FC<ThreeJSCanvasProps> = ({ DEVMODE = false, onMeshSelect, onBackgroundSelect }) => {
-        let animationId: number;
+    let animationId: number;
     const canvasRef = useRef<HTMLDivElement>(null);
 
 
@@ -51,9 +57,10 @@ const ThreeJSCanvas: React.FC<ThreeJSCanvasProps> = ({ DEVMODE = false, onMeshSe
          * 
          */
         //--PLANETARY SYSTEM TEST--
-        const system = new PlanetarySystem({name: 'test system', position: new PolarCoordinate(0,0,0)})
+        const system = PlanetarySystem.genRandKtypeSys("K_TYPE_SYSTEM")
         console.log(system)
-
+        
+       
         // ** CREATE ALL MESHES AND STORE IN MESHCONTAINERS 
         //get body array
         const bodies = system.getBodies()
@@ -64,8 +71,8 @@ const ThreeJSCanvas: React.FC<ThreeJSCanvasProps> = ({ DEVMODE = false, onMeshSe
             } else if (body instanceof Planet){
                 let plMeshContainer = drawPlanet(scene, body)
                 meshContainers[body.name] = plMeshContainer
-                console.log(`scaled body orbitalradius of ${body.name} is ${scalePlanetOrbitalDistance(body.position.r)}`)
-                plMeshContainer.mesh.position.set(scalePlanetOrbitalDistance(body.position.r), 0, 0)
+                console.log(`scaled body orbitalradius of ${body.name} is ${body.position.r}`)
+                plMeshContainer.mesh.position.set(body.position.r, 0, 0)
 
             }
         })
@@ -84,7 +91,7 @@ const ThreeJSCanvas: React.FC<ThreeJSCanvasProps> = ({ DEVMODE = false, onMeshSe
          * 
          */
         //set init camera position
-        camera.position.set(6,6,4)
+        camera.position.set(10,6,4)
         // Inside your Three.js setup code
         const controls = new OrbitControls(camera, renderer.domElement);
         // Optionally, customize the controls
@@ -173,7 +180,7 @@ const ThreeJSCanvas: React.FC<ThreeJSCanvasProps> = ({ DEVMODE = false, onMeshSe
         const targetFPS = 60; // Target 30 frames per second
         const frameTime = 1 / targetFPS; // Time per frame in seconds (e.g., 1/30 = ~0.033s)
         const updateInterval = 2; // Perform incremental updates every 1 second
-        // Step 3: Animation loop
+        // loop
         const animate = () => {
             const currentTime = performance.now();
             let deltaTime = (currentTime - lastTime) / 1000; // Convert to seconds
@@ -186,15 +193,20 @@ const ThreeJSCanvas: React.FC<ThreeJSCanvasProps> = ({ DEVMODE = false, onMeshSe
             while (deltaTime >= frameTime) {
                 const rootBody = system.getRootBody();
                 const rootMesh = meshContainers[rootBody.name].mesh;
-    
-                if (rootMesh) {
-                    // Use the fixed frame time for consistent movement
-                    rootMesh.rotation.y += 0.001 * frameTime * 60;
-                    updatePositionRecursively(rootBody, meshContainers, rootMesh.position, frameTime);
-                }
 
+                //** ANIMATE THE SCENE **/
+                // ANY ANIMATIONS HAPPEN HERE 
+                // rotate every body 
+                meshes.forEach(meshBody => {
+                    meshBody.rotation.y += 0.001 * frameTime * 60;
+                })
+                // update all positions
+                updatePositionRecursively(rootBody, meshContainers, rootMesh.position, frameTime);
+                //** UPDATE GAME LOOP **/
+                // 
                 if (currentTime - lastUpdate >= updateInterval * 1000) { // Check if it's time to update the game state
                     console.log(updateInterval, 'sec has elpased'); // Function to update resources, stats, etc.
+                    //CALL UPDATE GAMESTATES FUNCTION
                     lastUpdate = currentTime; // Reset last update time
                 }
     
@@ -210,7 +222,7 @@ const ThreeJSCanvas: React.FC<ThreeJSCanvasProps> = ({ DEVMODE = false, onMeshSe
             animationId = requestAnimationFrame(animate);
         };
         /*------------------------
-                INIT ANIMATION LOOP
+                INIT LOOP
         --------------------------*/
         animate();
         /**

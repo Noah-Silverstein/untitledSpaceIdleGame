@@ -1,8 +1,9 @@
 //all drawing functions in this file
 
 import * as THREE from "three";
-import {Star} from './astronomicalClasses/Stars.tsx'
-import { Planet, Terran } from "./astronomicalClasses/plannetClasses.ts";
+import {Star} from './astronomicalClasses/stars.ts'
+import { GAMMA } from "./astronomicalClasses/globalVars.ts";
+import { Planet } from "./astronomicalClasses/planet.ts";
 
 
 export class MeshContainer{
@@ -29,7 +30,6 @@ export class MeshContainer{
  */
 export function drawCircle(scene: THREE.Scene, radius: number, segments: number, color: string): THREE.LineLoop {
     const points: THREE.Vector3[] = [];
-  
     // Calculate points for the circle outline
     for (let i = 0; i <= segments; i++) {
       const angle = (i / segments) * Math.PI * 2; // Full circle
@@ -111,14 +111,18 @@ export function rgbStringToTHREEColor(rgbString: string) {
 
 // Function to adjust intensity based on wavelength
 function adjustIntensity(color: number, factor: number): number {
-    if (color === 0) return 0;
-    return Math.round(255 * Math.pow(color * factor, 0.8)); // Apply gamma correction
+    const maxIntensity = 255
+    if (color === 0) {
+        return 0;
+    } else {
+        return Math.round(maxIntensity * Math.pow(color * factor, GAMMA)); // Apply gamma correction
+    }
 }
 /**
  * Estimate Color(RGB) based on WaveLength
  * 
  * @param wavelength - wavelength in nm
- * '#rgb255,0,0'
+ * 
  */
 
 // Function to convert wavelength to RGB
@@ -147,12 +151,11 @@ export function wavelengthToRGB(wavelength: number): { r: number, g: number, b: 
         r = 1;
         g = -(wavelength - 645) / (645 - 580);
         b = 0;
-    } else if (wavelength >= 645 && wavelength <= 750) {
+    } else if (wavelength >= 645 && wavelength <= 781) {
         r = 1;
         g = 0;
         b = 0;
     }
-    console.log(r, g, b)
 
     if((wavelength >= 380) && (wavelength < 420)) {
         factor = 0.3 + 0.7 * (wavelength - 380) / (420 - 380);
@@ -163,29 +166,36 @@ export function wavelengthToRGB(wavelength: number): { r: number, g: number, b: 
     } else {
         factor = 0.0;
     }
-    console.log(r, g, b)
 
     // Adjust the intensity based on the factor
     r = adjustIntensity(r, factor);
     g = adjustIntensity(g, factor);
     b = adjustIntensity(b, factor);
-    console.log(r, g, b)
+    console.log("__COLORED STAR RGB__:",r,g,b)
     return { r, g, b };
 }
 
 function scaleStarSize(starRadius: number): number{
-    const drawnRadius = 0*starRadius + 0.1
+    const drawnRadius = 0*starRadius + 1
     return drawnRadius
 }
 
+function scaleRadiusLog(originalRadius: number): number {
+    const a = 10; // Scaling factor, adjust to fit within the 0.001 to 30 range
+    const b = 0.01; // Adjust this to control how the curve behaves
+
+    const scaledRadius = a * Math.log(b * originalRadius + 1);
+    return Math.max(0.001, Math.min(scaledRadius, 30)); // Ensure it remains in the 0.001 to 30 range
+}
+
 function scalePlanetSize(planetRadius: number): number {
-    const drawnRadius = 0*planetRadius + 0.3
+    const drawnRadius = 0*planetRadius + 0.2
     return drawnRadius
 }
 
 export function scalePlanetOrbitalDistance(realOrbitalDistance: number): number {
     const minDrawDistance = 1;
-    const maxDrawDistance = 15;
+    const maxDrawDistance = 20;
 
     // Prevent realOrbitalDistance from being less than 1 (to avoid issues with log(0) or negative scaling)
     const clampedDistance = Math.max(realOrbitalDistance, 1);
@@ -198,12 +208,10 @@ export function scalePlanetOrbitalDistance(realOrbitalDistance: number): number 
 }
 
 export function drawStar(scene: THREE.Scene, star: Star): MeshContainer {
-    console.log('drawing star')
-    console.log(star)
-    console.log(star.wavelengthPeak)
+   
     const starRGBColor = wavelengthToRGB(star.wavelengthPeak)
     const starColor = new THREE.Color( starRGBColor.r/255, starRGBColor.g/255, starRGBColor.b/255)
-    const starMesh = drawSphere(scene, scaleStarSize(star.radius ? star.radius : 1), 16, 16, starColor )
+    const starMesh = drawSphere(scene, scaleStarSize(star.solarRadius ? star.solarRadius : 1), 16, 16, starColor )
     // ** NAMING THE MESH IS IMPORTANT **
     starMesh.name = star.name
     return new MeshContainer(starMesh, starColor, modifyColor(starColor, -100 ))
@@ -211,12 +219,10 @@ export function drawStar(scene: THREE.Scene, star: Star): MeshContainer {
 
 export function drawPlanet(scene:THREE.Scene, planet: Planet): MeshContainer {
     const planetColor = getPlanetColor(planet)
-    //if planet terran
-    if (planet instanceof Terran){
-        var planetMesh = drawSphere(scene, scalePlanetSize(planet.radius), 8, 8, new THREE.Color(planetColor))
-    } else { //for now all non terran planets are moons
-        var planetMesh = drawSphere(scene, 0.1, 8, 8, new THREE.Color(planetColor))
-    }
+    //** CREATE PLANET MESH **
+    const scaledRadius = scaleRadiusLog(planet.earthRadius)
+    var planetMesh = drawSphere(scene, scaledRadius, 8, 8, new THREE.Color(planetColor))
+    console.log('___SCALED PLANET RADIUS:__', planet.earthRadius, '__TO:__', scaledRadius)   
     // ** NAMING THE MESH IS IMPORTANT **
     planetMesh.name = planet.name
     return new MeshContainer(planetMesh, planetColor, modifyColor(planetColor, -100))

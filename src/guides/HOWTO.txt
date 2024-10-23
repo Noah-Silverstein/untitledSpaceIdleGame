@@ -1,0 +1,5 @@
+HOW TO ADD PLANETS
+    follow planet conventions like ...
+    add planet type in planetclasses.ts 
+    add planet type in planetarSystem Class: PLANET_TYPES
+

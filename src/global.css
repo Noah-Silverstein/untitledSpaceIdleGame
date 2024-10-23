@@ -2,14 +2,14 @@
 /*Fonts from https://int10h.org/oldschool-pc-fonts/ by VileR*/
 @font-face {
   font-family: 'IBM_DOS'; /* Custom font family name */
-  src: url('./src/assets/fonts/Web437_IBM_DOS_ISO8.woff') format('woff');  
+  src: url('./assets/fonts/Web437_IBM_DOS_ISO8.woff') format('woff');  
   font-weight: 400; /* 400 default */
   font-style: normal; /* normal, italic, oblique, inherit,... */
 }
 
 @font-face {
   font-family: 'AMI_EGA'; /* Custom font family name */
-  src: url('./src/assets/fonts/Web437_AMI_EGA_8x14.woff') format('woff'); 
+  src: url('./assets/fonts/Web437_AMI_EGA_8x14.woff') format('woff'); 
   font-weight: 400; /* 400 default */
   font-style: normal; /* normal, italic, oblique, inherit,... */
 }

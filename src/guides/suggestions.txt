@@ -1,0 +1,51 @@
+Based on the architecture you're building and the discussion so far, here are some classes that could help organize your code more effectively. These classes are designed to encapsulate specific responsibilities, promoting better separation of concerns and making the system more modular and scalable.
+1. ThreeJSCanvas (React Component)
+
+    Description: The main React component that initializes and manages the Three.js setup, including rendering, attaching input handlers, and managing the animation loop.
+    Responsibilities: Initialize the renderer, camera, and core scene; handle mounting and cleanup.
+
+2. BaseScene
+
+    Description: An abstract base class for scenes that sets up general scene behavior and common methods.
+    Responsibilities: Manage the common Three.js scene setup (e.g., adding objects, handling lighting) and provide dispose functionality to clean up resources.
+
+3. PlanetarySystemScene (Extends BaseScene)
+
+    Description: A scene that specifically handles rendering a planetary system, including stars, planets, and moons.
+    Responsibilities: Set up the 3D objects, positioning, and animations for a planetary system view.
+
+4. PlanetAndMoonScene (Extends BaseScene)
+
+    Description: A specialized scene for focusing on a specific planet and its moons.
+    Responsibilities: Similar to PlanetarySystemScene, but tailored to showcase a planet and its natural satellites in detail.
+
+5. InputHandler
+
+    Description: A class dedicated to managing user inputs (mouse movements, clicks, drags) and interactions within the scenes.
+    Responsibilities: Centralize event listeners for inputs and handle hover, click, and drag behaviors. Cleanly remove listeners during cleanup.
+
+6. CameraController
+
+    Description: A utility class for managing and controlling the camera, including orbit controls and camera switching between scenes.
+    Responsibilities: Handle camera positioning, zoom, and transitions. Facilitate smooth camera movements and manage controls like OrbitControls.
+
+
+11. MeshContainer
+
+    Description: A helper class to manage a THREE.Mesh along with metadata (e.g., colors, initial position).
+    Responsibilities: Store and handle data related to a mesh, like hover colors, original colors, and reference to the actual mesh object.
+
+12. SceneManager
+
+    Description: A class that manages switching between different scenes, handling cleanup and setup when changing views.
+    Responsibilities: Keep track of which scene is active, ensure proper disposal when switching scenes, and manage any transitions or shared resources between scenes.
+
+13. ResourceManager
+
+    Description: A utility class for managing shared assets like textures, geometries, and materials.
+    Responsibilities: Handle loading and caching of assets to be used across different scenes, ensuring resources aren't reloaded unnecessarily.
+
+14. AnimationManager
+
+    Description: A class that manages all animations and the main loop.
+    Responsibilities: Control the animation loop, manage frame updates, and handle time-related tasks like delta time and FPS throttling.
