@@ -1,0 +1,35 @@
+
+------------------------------------------------- MAIN SEQUENCE STARS ----------------------------
+
+Main-Sequence Star Types and Planet Formation Likelihood
+Spectral Type	    Description	                        High Likelihood Zone (AU)	Average Likelihood Zone (AU)	    Unlikely Zone (AU)
+    O	            Massive, hot, and luminous stars	    0.1 - 1	                            1 - 5	                        > 10
+    B	            Hot, blue stars	                        0.1 - 5	                            5 - 15	                        > 30
+    A	            White stars, intermediate mass	        0.5 - 10	                        10 - 25	                        > 50
+    F	            Slightly cooler than A-type	            1 - 15	                            15 - 30	                        > 50
+    G	            Similar to the Sun (G-type)	            1 - 20	                            20 - 50	                        > 100
+    K	            Cooler than the Sun	                    0.5 - 30	                        30 - 50	                        > 100
+    M	            Red dwarfs, low mass	                0.1 - 2	                            2 - 5	                        > 10
+
+Star Type	            Common Elements	                    Rare Elements
+    O	        H, He, C, N	                                Ne, Na, Mg, Al
+    B	        H, He, C, O, Ne	                            Ti, Cr, Fe
+    A	        H, He, C, O, N, Ne, Mg	                    Si, P, S
+    F	        H, He, C, O, N, Ne, Mg, Si	                Cl, Ar, Ca
+    G           H, He, C, O, N, Ne, Mg, Si, Fe	            K, Ti, V, Cr
+    K	        H, He, C, O, N, Ne, Mg, Si, Fe, Ca	        Zn, Ge, Se
+    M	        H, He, C, O, N, Ne, Mg, Si, Fe, Ca, Ti	    As, Br, Rb
+
+
+Region / Type of Cloud	                        Metallicity (Z) Range
+Early Universe Clouds	                    Z<0.0001 (very low)
+Metal-poor Globular Clusters	            Z≈0.0001−0.001
+Milky Way Halo Stars	                    Z≈0.0001−0.01 (low metallicity)
+Solar Neighborhood (Disk)	                Z≈0.01−0.03 (close to solar metallicity)
+Metal-rich Regions (e.g., Galactic Center)	Z>0.03 (high metallicity)
+
+Type of Cloud	                    	Density Range (kg/m3)
+Diffuse Interstellar Medium	                10e-22 - 10e-21
+Giant Molecular Clouds (GMCs)	            10e-21 - 10e-20
+Dense Star-Forming Regions	                10e-20 - 10e-17
+Cores of Dense Clouds	                    10e-17

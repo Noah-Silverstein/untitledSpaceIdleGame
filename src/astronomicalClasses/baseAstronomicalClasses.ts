@@ -26,7 +26,8 @@ I haven't researched this too much but I'm just freeballing this based on MK (an
 ranges are based on the diagram on this site http://www.atlasoftheuniverse.com/startype.html
 
 */
-import * as UNI from "./globalVars.ts";
+import { randomInteger } from "../global/globalFuncts.ts";
+import * as UNI from "../global/globalVars.ts";
 import { PolarCoordinate } from "./polarCoordinate.ts";
 
 
@@ -72,7 +73,6 @@ export abstract class AstronomicalObject {
 }
 
 
-
 /* [α-A] ----------------------------
         ASTRONOMICAL BODY
   KEY: single, tightly bound, somewhat? contiguous entity
@@ -90,7 +90,7 @@ export interface AstronomicalBodyParams extends AstronomicalObjectParams {
 export type WithoutRealValues<T> = Omit<T, 'realMass' | 'realRadius'>;
 
 /**
- * Represents an astronomical body such as a planet, moon, star, blackhole
+ * Represents an astronomical body such as a planet, moon, star, blackhole, any discrete astronomical object
  *
  * @class AstronomicalBody
  * @extends AstronomicalObject
@@ -102,14 +102,17 @@ export type WithoutRealValues<T> = Omit<T, 'realMass' | 'realRadius'>;
  */
 
 export abstract class AstronomicalBody extends AstronomicalObject{
-    //** REQUIRED **//
+    //** REQUIRED INIT ARG **//
     public mass: number;
     public radius: number;
-    //** OPTIONAL **//
+    //** OPTIONAL INIT ARG **//
 	public parentBody: AstronomicalBody | undefined = undefined
 	public naturalSatellites: AstronomicalBody[]; 
+    //** REQUIRED ARGS **/
+    public density: number = 0
+
     //** CALCULATED **//
-    public density: number;
+    public hillSphere: number = 0
 
     constructor(params: AstronomicalBodyParams){
         super(params)
@@ -120,99 +123,128 @@ export abstract class AstronomicalBody extends AstronomicalObject{
         this.parentBody = params.parentBody 
         params.naturalSatellites ? this.naturalSatellites = params.naturalSatellites : this.naturalSatellites = []
         //** CALCULATE PROPERTIES **//
-        this.density = this.mass/this.radius
          
     }
 	/**
      * Adds one or more natural satellites (e.g., moons, or planet) to this astronomical body.
-     * 
      * @param {AstronomicalBody[] | AstronomicalBody} satelliteBodies - A single satellite or an array of satellites to be added to this body.
      */
 	public addNaturalSatellites(satelliteBodies:AstronomicalBody[] | AstronomicalBody){
 		if(Array.isArray(satelliteBodies)){
 			for (const satellite of satelliteBodies) {
-                satellite.parentBody = this; // Set the parent
-                this.naturalSatellites.push(satellite);
+                if(!this.naturalSatellites.includes(satellite)){    //only add if not already a satellite
+                    this.naturalSatellites.push(satellite);
+                }
 			}
-		} else {
-			satelliteBodies.parentBody = this; // Set the parent
+		} else if(!this.naturalSatellites.includes(satelliteBodies)){    //only add if not already a satellite
             this.naturalSatellites.push(satelliteBodies);
+        
 		}
 	}
 
 	/**
      * Sets the parent body that this astronomical body orbits.
-     * 
      * @param {AstronomicalBody} body - The parent body (e.g., a star or planet) that this body will orbit.
      */
-	public setParentBody(body:AstronomicalBody){
-		if (this.parentBody){
-			console.log(`___WARNING: OVERWRITING PARENTBODY! CURRENT PARENTBODY: ${this.parentBody} WILL GET OVERWRITTEN`)
-		}
-		this.parentBody = body
-	}
+	public setParentBody(body: AstronomicalBody) {
+        if (!this.parentBody) { // Check if parentBody is undefined
+            this.parentBody = body;
+            //console.log(`Parent body set to ${body.name} for ${this.name}.`);
+        } else if (this.parentBody === body) { // Use strict equality
+            console.log(`Parent body for ${this.name} is already set to ${body.name}.`);
+        } else { // If parentBody is different, warn about overwriting
+            console.warn(`___WARNING: OVERWRITING PARENT BODY FOR ${this.name}! CURRENT PARENT BODY: ${this.parentBody.name} WILL GET OVERWRITTEN___`);
+            this.parentBody = body; // Update to new parent body
+        }
+    }
+
+    /**
+     * Gets the name of the parentBody or returns false
+     * @returns the parent body name or null
+     */
+    public getParentBodyName(): string | undefined  {
+            if (this.parentBody)
+                return this.parentBody.name
+    }
 
     /**
      * Calculates the hill radius of the Body with respect to the parentBody
      * @returns The Hill radius in AU
      * Hill radius stable orbits are within 0.33.. _ 0.5 https://en.wikipedia.org/wiki/Hill_sphere
      */
-    protected calculateHillRadius(): number {
-        if (this.parentBody){
-            if(this.parentBody.mass && this.parentBody.mass> 1 && this.mass && this.mass > 1){
-                if(this.position && this.position.r > 0){
-                    return this.position.r * Math.pow(this.mass / (3 * this.parentBody.mass), (1/3))
-                } else {
-                    console.warn(`${this.name} does not have a position OR it's orbital radius = 0. HillRadius is set to MAX_PLANETARY_ORBITAL_DISTANCE`)
-                    debugger
-                    return UNI.MAX_PLANETARY_ORBITAL_DISTANCE
-                }
-            } 
+    protected calculateHillRadius(parentRealMass: number): number {
+        if (this.position.r != 0){
+           return this.position.r*(Math.pow(this.mass/(3*parentRealMass), 1/3))
+        } else {
+            console.log("__ERROR__in calculate hill radius for: ", this.name)
+            return 0
         }
-        console.log("__ERROR__in calculate hill radius for: ", this.name)
-        return 0
     }
     /**
-     * Given A satellite body with mass and radius check what the minimum distance that body has to be in
-     * order not to not get destroyed by tidal forces
-     * @param {AstronomicalBody} satellite 
+     * Given A satellite body with real mass and real radius check what the minimum distance that body has to be, in
+     * order not to get destroyed by tidal forces
+     * @param {number} satelliteRealMass - The Real Mass (in Kg) of the satellite 
+     * @param {number} satelliteRealRadius - The Real Radius (in Km) of the satellite
      * @returns The Roche Limit for the given satellite for THIS body in AU
      */
-    public calcRigidRocheLimit(satellite: AstronomicalBody): number{
-        if(this.mass && this.mass > 1 && satellite.mass && satellite.mass > 1 && satellite.radius){
-            let rochelimit = satellite.radius*Math.pow(2*this.mass/satellite.mass, 1/3)
+    public calcRigidRocheLimit(satelliteRealMass: number, satelliteRealRadius: number): number{
+        if(this.mass && this.mass > 1 && satelliteRealMass > 1){
+            let rochelimit = satelliteRealRadius*Math.pow(2*this.mass/satelliteRealMass, 1/3)
             return (rochelimit/UNI.ASTRO_UNIT)
         } else {
             throw new Error("Mass for primary or satellite doesn't exist OR satellite has no radius")
         }
     }
 
-    protected estFluidRocheLimit(satellite: AstronomicalBody): number{
-        return 2.44*this.radius*Math.pow(2*this.density/satellite.density, 1/3)
+
+}
+
+export class FreeFloatingDummy extends AstronomicalBody{
+    constructor(params: AstronomicalBodyParams){
+        super(params)
+    }
+
+    static genDummy(){
+        return new FreeFloatingDummy({
+            realMass: 0,
+            realRadius: 0,
+            name: "FreeFloatingDummy" + randomInteger(1,1000),
+            position: new PolarCoordinate(Infinity, 0, 0)
+        })
     }
 }
+
 
 /* [α-A-1] ----------------------
         PLANETARY MASS OBJECT 
 KEY: 1. Never generated nuclear fusion chain reaction
      2. shape determined by gravity (idk?)
 purpose is to group all planet 'types' together ( planets, planetary-scale Satellites, unbound planets )
-MOONS, PLANETS, ASTEROIDS, ...
+MOONS, PLANETS, , ...
 -----------------------*/
 export class PlanetaryMassObject extends AstronomicalBody{
     //what methods and variables make sense here?
     public radius: number //REAL VALUE
+    public volume: number
+    public density: number
+    
     constructor(params: PlanetaryMassParams){
         super(params);
         this.radius = params.realRadius
+        this.volume = (4 / 3) * Math.PI * Math.pow(this.radius, 3);
+        this.density = this.mass/this.volume
     }
 
-}
-
-export class PlanetaryScaleSatellite extends AstronomicalBody{
-    constructor(params: PlanetaryMassParams){
-        super(params)
+    
+    protected estFluidRocheLimit(satellite: AstronomicalBody): number{
+        if(this.density && satellite.density){
+            return 2.44*this.radius*Math.pow(2*this.density/satellite.density, 1/3)
+        } else {
+            console.warn("estimating Fluid Roche Limit Failed because undefined density: ", this.density, satellite.density )
+            return 0
+        }
     }
+
 }
 
 

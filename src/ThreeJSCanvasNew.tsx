@@ -8,6 +8,10 @@ import { Scaler } from "./scaler/scaler";
 import { PlanetarySystemDrawer } from "./gameDrawers/planetarySystemDrawer";
 import { AnimationManager } from "./gameManagers/animationManager";
 import { BaseScene } from "./scene/baseScene";
+import { useGameData } from "./GameDataContext";
+import { PlanetarySystemBuilder } from "./builders/planetarySystemBuilder";
+import { GameDataLoader } from "./gameDataLoader";
+import { PolarCoordinate } from "./astronomicalClasses/polarCoordinate";
 
 interface ThreeJSCanvasProps {
     DEVMODE?: boolean;
@@ -24,15 +28,22 @@ interface ThreeJSCanvasProps {
  */
 const ThreeJSCanvasNew: React.FC<ThreeJSCanvasProps> = ({ DEVMODE = true, onMeshSelect, onBackgroundSelect }) => {
     const canvasRef = useRef<HTMLDivElement>(null);
+    const data = useGameData();
+    const dataLoader = new GameDataLoader()
+    const sysBuilder = new PlanetarySystemBuilder(dataLoader.GAME_MINERALS, "Milky-Way")
 
 
     useEffect(() => {
         const renderer = new THREE.WebGLRenderer();
+        console.log("my data from storage:", data.GAME_MINERALS);
         //const rootStyle = getComputedStyle(document.documentElement);
         let my3DScenes = {}
         let currScene = undefined
+        const sys = sysBuilder.genRandSimplePlanetarySystem("Icarus", new PolarCoordinate(17,Math.PI, 0))
+        console.log("___SYS___", sys)
         let myPLSScene = new PlanetarySystemScene({
-            system: PlanetarySystem.genRandKtypeSys('MySystem123'),
+            gameData: data,
+            system: sys,
             scaler: new Scaler(),
             drawer: new PlanetarySystemDrawer(),
             DEVMODE: DEVMODE,

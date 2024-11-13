@@ -13,7 +13,7 @@ export class AnimationManager {
 
 	private targetFPS: number	// Target 60 frames per second unless passed different argument
 	private frameTime: number // Time per frame in seconds (e.g., 1/30 = ~0.033s)
-	private updateInterval: number = 2	// Perform incremental updates every 1 second
+	private updateInterval: number = 30	// Perform incremental updates every 1 second
 
 	private lastTime = performance.now() //Track when last frame was rendered
 	private lastUpdate = performance.now()

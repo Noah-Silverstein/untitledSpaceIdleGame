@@ -1,7 +1,7 @@
 import { Atmosphere } from "./atmosphere";
-import { AstronomicalBody, PlanetaryMassObject, PlanetaryMassParams, WithoutRealValues } from "./baseAstronomicalClasses";
+import { AstronomicalBody, PlanetaryMassObject, PlanetaryMassParams, WithoutRealValues } from "../baseAstronomicalClasses";
 import { PlanetConstructor } from "./plannetClasses";
-import { PolarCoordinate } from "./polarCoordinate";
+import { PolarCoordinate } from "../polarCoordinate";
 
 export interface PlanetParams extends WithoutRealValues<PlanetaryMassParams> {
   //** REQUIRED **//

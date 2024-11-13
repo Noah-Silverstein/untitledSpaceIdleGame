@@ -1,17 +1,23 @@
-import { AstronomicalBody, AstronomicalBodyParams, WithoutRealValues } from "./baseAstronomicalClasses";
-import { randomInteger } from "./globalFuncts";
-import * as UNI from './globalVars'
-import { PolarCoordinate } from "./polarCoordinate";
+import { AstronomicalBody, AstronomicalBodyParams, WithoutRealValues } from "../baseAstronomicalClasses";
+import { randomInteger } from "../../global/globalFuncts";
+import * as UNI from '../../global/globalVars'
+import { PolarCoordinate } from "../polarCoordinate";
 /* [α-A-2] ----------------------
 								STARS
 		KEY: you know 'em, you love em, ya know...stars
 	classifying based on luminosity classes
-	
+
+		LUMINOSITY CLASSES come from stellar evolution https://en.wikipedia.org/wiki/Stellar_evolution#/media/File:Starlifesimple.png
+														https://en.wikipedia.org/wiki/Stellar_evolution#/media/File:Star_Life_Cycle_Chart.jpg
 		mass luminosity relationship -> https://en.wikipedia.org/wiki/Mass%E2%80%93luminosity_relation#Distinguishing_between_small_and_large_stellar_masses
 		mass radius relationship -> https://jila.colorado.edu/~ajsh/courses/astr1120_03/text/chapter5/l5S1.htm
 		mass Temp relationship -> Stefan–Boltzmann_law  https://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_law
 		temp Wavelength -> https://en.wikipedia.org/wiki/Wien%27s_displacement_law
 		habitable zones -> https://www.planetarybiology.com/calculating_habitable_zone.html &	https://iopscience.iop.org/article/10.1088/0004-637X/765/2/131/meta
+		Metallicity -> https://en.wikipedia.org/wiki/Metallicity
+			influences planet formation and star type
+
+		https://en.wikipedia.org/wiki/Initial_mass_function
 
 		Therefore, we have derived relationships between HZ stellar fluxes (Seff) reaching the top of 
 		the atmosphere of an Earth-like planet and stellar effective temperatures (Teff) applicable in the range 2600 K ⩽Teff ⩽ 7200 K: 
@@ -19,7 +25,7 @@ import { PolarCoordinate } from "./polarCoordinate";
 		NOT A, O, or B
 		TODO?? ADD EARLY/MID/LATE for stars based on temp? https://en.wikipedia.org/wiki/Stellar_classification spectral types
 ----------------------------*/
-function generateStarName(): string {
+export function generateStarName(): string {
 	const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	const randomLetters = Array(3).fill("").map(() => letters[Math.floor(Math.random() * letters.length)]).join('');
 	const randomDigits = randomInteger(1e7,1e8 ) // Generates a 7-digit number
@@ -36,7 +42,7 @@ function generateStarName(): string {
  * @property {number} [surfaceTemp] - The surface temperature of the star in Kelvin. Optional.
  * @property {AstronomicalBody[]} [naturalSatellites] - An array of natural satellites (e.g., planets) orbiting the star. Optional.
  */
-interface StarParams extends WithoutRealValues<AstronomicalBodyParams> {
+export interface StarParams extends WithoutRealValues<AstronomicalBodyParams> {
 	solarRadius: number;
 	solarMass: number;
 	luminosity: number;
@@ -64,6 +70,8 @@ export abstract class Star extends AstronomicalBody {
     public surfaceTemp: number;	//Kelvin
     public wavelengthPeak: number;	//peak wavelength in nm
     public habitableZones: Record<string,  number >;
+	public frostLine: number
+	public silicateLine: number
 	public spectralType?: string
 	public hillSphere: number = 0	//-------------> change this or initialize stars to orbit around black hole center of galaxy
 	//initialize for 0 planet likelyhood
@@ -86,6 +94,31 @@ export abstract class Star extends AstronomicalBody {
 		this.name = params.name ?? generateStarName()
 		this.habitableZones = this.calcHabitableZoneBoundaries(this.surfaceTemp)
 		this.wavelengthPeak = this.calcWaveLength(this.surfaceTemp)
+		this.frostLine = this.estFrostLine(this.luminosity)
+		this.silicateLine = this.estSilicateLine(this.luminosity)
+	}
+
+	/**
+	 * returns the rough distance you'll find temps equal or lower than given temp for a given luminosity
+	 * @param lumin - Solar Luminosity of the star
+	 * @param temp - The target Temperature in Kelvin [K]
+	 * @returns - the distance from the star to the target Temperature in AU
+	 */
+	protected estDistanceForTemp(lumin: number, temp: number){
+		return Math.pow(lumin*UNI.SOLAR_LUMINOSITY/(16*Math.PI*UNI.STEFAN_BOLTZMANN_CONSTANT*(temp**4)), 0.5)/UNI.ASTRO_UNIT
+	}
+
+	protected estSilicateLine(lumin: number){
+		return this.estDistanceForTemp(lumin, 1500)	//all silicates are molten at 1200
+	}
+
+	/**
+	 * Estimates the FrostLine of a star: the distance at which volatiles start coalescing 
+	 * @param lumin - Solar Luminosity of the Star
+	 * @returns - the FrostLine distance in AU
+	 */
+	protected estFrostLine(lumin: number){
+		return this.estDistanceForTemp(lumin, 150)	//at 150 (-125 c°) volatiles form solids
 	}
 
 	public getPlanetOdds(distance: number): number {
@@ -124,8 +157,11 @@ export abstract class Star extends AstronomicalBody {
 	}
 	/**
 	 * estimate the Luminosity based on the mass of the star
-	 * @param mass in Stellar Mass
+	 * @param mass in Solar Mass
 	 * @returns luminosity in Solar Luminosity
+	 * https://en.wikipedia.org/wiki/Mass%E2%80%93luminosity_relation
+	 * https://sites.astro.caltech.edu/~george/ay20/eaa-stellarmasses.pdf
+	 * https://books.google.be/books?id=-ljdYMmI0EIC&pg=PA19&redir_esc=y#v=onepage&q&f=false
 	 */
 	protected static estLuminosityFromMass(mass: number): number{
 		let lumin: number
@@ -230,126 +266,7 @@ export abstract class Star extends AstronomicalBody {
 	}
 }
 
-interface MainSequenceParams extends StarParams{
-	spectralType: string
-}
-/* [α-A-2.1] ----------------------
-                        V -	MAIN SEQUENCE
-    KEY: It's a little complicated, just trust me bro
 
-    ----------------------------*/
-class MainSequenceStar extends Star {
-	public spectralType: string;
-	public luminosityClass: string = 'V';
-
-	constructor(params: MainSequenceParams){
-		super(params)
-		this.spectralType = params.spectralType
-		this.planetLikelyhoodRange = UNI.MAIN_SEQUENCE_PLANET_LIKELIHOOD[this.spectralType];
-		this.planetOdds = UNI.ODDS_FOR_PLANET_MSQ
-	}
-	//-------------------just random shit------------------
-	public static genRandom(): MainSequenceStar {
-		const spectralType = 'K-type'
-		const mss = randomInteger(1,10);
-		const lumin = this.estLuminosityFromMass(mss)
-		const rdius = Math.pow(mss,0.8)
-		const srfaceTemp = this.calcSurfaceTemp(lumin, rdius)
-		const nme = 'V' + generateStarName()
-
-		return new MainSequenceStar({
-			
-			name:nme,
-			spectralType: spectralType,
-			position: new PolarCoordinate(0,0,0),
-			solarMass:mss,
-			solarRadius:rdius,
-			luminosity: lumin,
-			surfaceTemp:srfaceTemp,
-
-		})
-	}
-	
-}
-
-/* [α-A-2.1.a] --------------------------
-                        A-TYPE V STAR
-    KEY: It's a little complicated, just trust me bro
-acceptable ranges of A-Type Main Sequence Stars Key Parameters Based on Luminosity
-
--------------------------------------------*/
-interface AVStarParams extends Omit<MainSequenceParams, 'spectralType'>{
-}
-export class AVStar extends MainSequenceStar {
-
-	constructor(params:AVStarParams){
-		super({
-			spectralType: 'aType',
-			...(params.name ? {name: params.name}: {name: ('A-type' + 'MSQ' + generateStarName())}),
-			...params
-		})
-	}
-}
-/* [α-A-2.1.a] --------------------------
-                        K-TYPE V STAR
-    KEY: It's a little complicated, just trust me bro
-acceptable ranges of K-Type Main Sequence Stars mass based on 
-
--------------------------------------------*/
-interface KVStarParams extends Omit<MainSequenceParams, 'spectralType'>{
-	
-}
-/**
- * Represents a K-type main-sequence star (K-V), a specific type of star in the Hertzsprung-Russell diagram.
- * Extends the MainSequenceStar class.
- *
- * @class KVStar
- * @extends MainSequenceStar
- * @param {MainSequenceStar} params - Parameters for configuring the K-V star.
- * @param {number} [params.mass] - The mass of the K-V star, in solar masses (L☉), which is constrained between 0.6 and 0.9. If no value is provided, a random value in this range is selected.
- * @param {number} [params.luminosity] - The luminosity of the star, relative to the Sun's luminosity (L☉). Optional, as it is derived from mass.
- * @param {number} [params.surfaceTemp] - The surface temperature of the star, in Kelvin. Optional, as it is derived from mass.
- * @param {AstronomicalBody[]} [params.naturalSatellites] - An array of natural satellites (e.g., planets) orbiting the star. Optional.
- * @param {string} [params.name] - The name of the star. If no name is provided, a name is generated based on its type.
- */
-
-export class KVStar extends MainSequenceStar {
-	
-	constructor(params:KVStarParams){
-		//pass spectral Type and naming through to parent class
-		super({
-			spectralType: 'kType',
-			...params	
-			//params required: solarmass, solarradius, position, luminosity, surfaceTemp
-		})
-	}
-	/**
-	 * 	Generate K-type Main Sequence Star
-	 * @param genName Name of the star. Optional
-	 * @returns K-Type V Star mass in Solar Mass, Radius in Solar Radius , 
-	 * Luminosity in Solar Luminosity Surface Temp in Kelvin
-	 * 
-	 */
-	static genRandom(genName?:string): KVStar {
-		const mss = randomInteger(100*UNI.K_TYPE_MAIN_SEQUENCE_MASS_LOWERBOUND, 100*UNI.K_TYPE_MAIN_SEQUENCE_MASS_UPPERBOUND)/100 //sizes hard coded from source https://en.wikipedia.org/wiki/K-type_main-sequence_star
-		const lumin = this.estLuminosityFromMass(mss) //in solar lumin
-		const rdius = Math.pow(mss,0.8)
-		const srfaceTemp = this.calcSurfaceTemp(lumin, rdius)
-		const nme = genName ?? ('K-type_' + '_MSQ_' + generateStarName())
-
-		return new KVStar({
-			solarMass:mss,
-			luminosity: lumin,
-			solarRadius:rdius,
-			surfaceTemp:srfaceTemp,
-			name:nme,
-			position: new PolarCoordinate(0,0,0)
-
-		})
-	}
-
-	
-}
 
 /* [α-A-2.1] --------------------------
                         VII - WHITE DWARF

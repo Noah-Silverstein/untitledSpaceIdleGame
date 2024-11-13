@@ -1,23 +1,11 @@
 //all drawing functions in this file
 
 import * as THREE from "three";
-import {Star} from './astronomicalClasses/stars.ts'
-import { GAMMA } from "./astronomicalClasses/globalVars.ts";
-import { Planet } from "./astronomicalClasses/planet.ts";
+import {Star} from './astronomicalClasses/stars/stars.ts'
+import { GAMMA } from "./global/globalVars.ts";
+import { Planet } from "./astronomicalClasses/planets/planet.ts";
 
 
-export class MeshContainer{
-    mesh: THREE.Mesh;
-    originalColor: THREE.Color;
-    onHoverColor: THREE.Color;
-    selected: boolean 
-    constructor(mesh: THREE.Mesh, originalColor: THREE.Color, onHoverColor: THREE.Color = rgbStringToTHREEColor('rgb(0, 0, 0)')){
-        this.mesh = mesh
-        this.originalColor = originalColor
-        this.onHoverColor = onHoverColor ?? originalColor
-        this.selected = false
-    }
-}
 
 
 /**
@@ -207,27 +195,6 @@ export function scalePlanetOrbitalDistance(realOrbitalDistance: number): number 
     return minDrawDistance + (logDistance - logMin) / (logMax - logMin) * (maxDrawDistance - minDrawDistance);
 }
 
-export function drawStar(scene: THREE.Scene, star: Star): MeshContainer {
-   
-    const starRGBColor = wavelengthToRGB(star.wavelengthPeak)
-    const starColor = new THREE.Color( starRGBColor.r/255, starRGBColor.g/255, starRGBColor.b/255)
-    const starMesh = drawSphere(scene, scaleStarSize(star.solarRadius ? star.solarRadius : 1), 16, 16, starColor )
-    // ** NAMING THE MESH IS IMPORTANT **
-    starMesh.name = star.name
-    return new MeshContainer(starMesh, starColor, modifyColor(starColor, -100 ))
-}
-
-export function drawPlanet(scene:THREE.Scene, planet: Planet): MeshContainer {
-    const planetColor = getPlanetColor(planet)
-    //** CREATE PLANET MESH **
-    const scaledRadius = scaleRadiusLog(planet.earthRadius)
-    var planetMesh = drawSphere(scene, scaledRadius, 8, 8, new THREE.Color(planetColor))
-    console.log('___SCALED PLANET RADIUS:__', planet.earthRadius, '__TO:__', scaledRadius)   
-    // ** NAMING THE MESH IS IMPORTANT **
-    planetMesh.name = planet.name
-    return new MeshContainer(planetMesh, planetColor, modifyColor(planetColor, -100))
-
-}
 
 export function disposeMesh(mesh: THREE.Mesh, scene: THREE.Scene) {
     // Remove the mesh from the scene

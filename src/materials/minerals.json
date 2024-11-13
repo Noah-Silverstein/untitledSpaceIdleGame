@@ -1,0 +1,759 @@
+[
+    {
+        "name": "Quartz",
+        "formula": "SiO2",
+        "type": "Silicate",
+        "properties": {
+            "color": "#FFFFFF",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Feldspar",
+        "formula": "KAlSi3O8",
+        "type": "Silicate",
+        "properties": {
+            "color": "#E1C6B2",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Mica",
+        "formula": "KAl2(AlSi3O10)(OH)2",
+        "type": "Silicate",
+        "properties": {
+            "color": "#A6A2B2",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Fe-Pyroxene",
+        "formula": "FeSiO3",
+        "type": "Silicate",
+        "properties": {
+            "color": "#4A4D4D",
+            "radioactivity": 0,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Fe-Amphibole",
+        "formula": "Ca2Fe5Si8O22(OH)2",
+        "type": "Silicate",
+        "properties": {
+            "color": "#3D3C32",
+            "radioactivity": 0,
+            "toxicity": 0.3
+        }
+    },
+    {
+        "name": "Mg-Olivine",
+        "formula": "Mg2SiO4",
+        "type": "Silicate",
+        "properties": {
+            "color": "#9C5D33",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Fe-Olivine",
+        "formula": "Fe2SiO4",
+        "type": "Silicate",
+        "properties": {
+            "color": "#9C5D33",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Serpentine",
+        "formula": "Mg3Si2O5(OH)4",
+        "type": "Silicate",
+        "properties": {
+            "color": "#4F7F5E",
+            "radioactivity": 0,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Talc",
+        "formula": "Mg3Si4O10(OH)2",
+        "type": "Silicate",
+        "properties": {
+            "color": "#E5E4E2",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Kaolinite",
+        "formula": "Al2Si2O5(OH)4",
+        "type": "Silicate",
+        "properties": {
+            "color": "#F5F5DC",
+            "radioactivity": 0,
+            "toxicity": 0.3
+        }
+    },
+    {
+        "name": "Zeolite",
+        "formula": "NaCa(SiAl)2Si2O10.4H2O",
+        "type": "Silicate",
+        "properties": {
+            "color": "#B7C9D9",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Hematite",
+        "formula": "Fe2O3",
+        "type": "Oxide",
+        "properties": {
+            "color": "#9B2A30",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Magnetite",
+        "formula": "Fe3O4",
+        "type": "Oxide",
+        "properties": {
+            "color": "#3B3C36",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Chromite",
+        "formula": "FeCr2O4",
+        "type": "Oxide",
+        "properties": {
+            "color": "#1E1E1E",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Bauxite",
+        "formula": "Al(OH)3",
+        "type": "Oxide",
+        "properties": {
+            "color": "#C6B299",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Zincite",
+        "formula": "ZnO",
+        "type": "Oxide",
+        "properties": {
+            "color": "#FFDA44",
+            "radioactivity": 0,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Cassiterite",
+        "formula": "SnO2",
+        "type": "Oxide",
+        "properties": {
+            "color": "#6D4B3A",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Rutile",
+        "formula": "TiO2",
+        "type": "Oxide",
+        "properties": {
+            "color": "#E9B6A0",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Ilmenite",
+        "formula": "FeTiO3",
+        "type": "Oxide",
+        "properties": {
+            "color": "#4E4E4E",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Wüstite",
+        "formula": "FeO",
+        "type": "Oxide",
+        "properties": {
+            "color": "#4A4A4A",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Corundum",
+        "formula": "Al2O3",
+        "type": "Oxide",
+        "properties": {
+            "color": "#9B7D7D",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Gold",
+        "formula": "Au",
+        "type": "Native Element",
+        "properties": {
+            "color": "#FFD700",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Silver",
+        "formula": "Ag",
+        "type": "Native Element",
+        "properties": {
+            "color": "#C0C0C0",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Copper",
+        "formula": "Cu",
+        "type": "Native Element",
+        "properties": {
+            "color": "#B87333",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Platinum",
+        "formula": "Pt",
+        "type": "Native Element",
+        "properties": {
+            "color": "#E5E4E2",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Iron",
+        "formula": "Fe",
+        "type": "Native Element",
+        "properties": {
+            "color": "#D7D9D7",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Nickel",
+        "formula": "Ni",
+        "type": "Native Element",
+        "properties": {
+            "color": "#B7B09C",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Lead",
+        "formula": "Pb",
+        "type": "Native Element",
+        "properties": {
+            "color": "#8B8C7A",
+            "radioactivity": 0,
+            "toxicity": 0.5
+        }
+    },
+    {
+        "name": "Bismuth",
+        "formula": "Bi",
+        "type": "Native Element",
+        "properties": {
+            "color": "#A14B81",
+            "radioactivity": 0,
+            "toxicity": 0.3
+        }
+    },
+    {
+        "name": "Zinc",
+        "formula": "Zn",
+        "type": "Native Element",
+        "properties": {
+            "color": "#7D7D7D",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Tin",
+        "formula": "Sn",
+        "type": "Native Element",
+        "properties": {
+            "color": "#C2C1C1",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Mercury",
+        "formula": "Hg",
+        "type": "Native Element",
+        "properties": {
+            "color": "#A3A8A1",
+            "radioactivity": 0.01,
+            "toxicity": 0.7
+        }
+    },
+    {
+        "name": "Arsenic",
+        "formula": "As",
+        "type": "Native Element",
+        "properties": {
+            "color": "#B8B1C4",
+            "radioactivity": 0,
+            "toxicity": 0.5
+        }
+    },
+    {
+        "name": "Selenium",
+        "formula": "Se",
+        "type": "Native Element",
+        "properties": {
+            "color": "#D8A88B",
+            "radioactivity": 0,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Antimony",
+        "formula": "Sb",
+        "type": "Native Element",
+        "properties": {
+            "color": "#B6B8B0",
+            "radioactivity": 0,
+            "toxicity": 0.3
+        }
+    },
+    {
+        "name": "Thallium",
+        "formula": "Tl",
+        "type": "Native Element",
+        "properties": {
+            "color": "#B8C5C1",
+            "radioactivity": 0,
+            "toxicity": 0.5
+        }
+    },{
+        "name": "Calcite",
+        "formula": "CaCO3",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#F5F5DC",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Dolomite",
+        "formula": "CaMg(CO3)2",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#D9D9D9",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Azurite",
+        "formula": "Cu3(CO3)2(OH)2",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#007fff",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Malachite",
+        "formula": "Cu2CO3(OH)2",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#0BDA51",
+            "radioactivity": 0,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Witherite",
+        "formula": "BaCO3",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#E1D9B6",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Iceland Spar",
+        "formula": "CaCO3",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#FFFFFF",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Strontianite",
+        "formula": "SrCO3",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#D4C0B0",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Cerussite",
+        "formula": "PbCO3",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#C0C0C0",
+            "radioactivity": 0,
+            "toxicity": 0.5
+        }
+    },
+    {
+        "name": "Smithsonite",
+        "formula": "ZnCO3",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#E7B2D6",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Siderite",
+        "formula": "FeCO3",
+        "type": "Carbonate",
+        "properties": {
+            "color": "#B5A16D",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },{
+        "name": "F-Apatite",
+        "formula": "Ca5(PO4)3F",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#C0D5E6",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "La-Monazite",
+        "formula": "LaPO4",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#BF9F73",
+            "radioactivity": 0.02,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Th-Monazite",
+        "formula": "ThPO4",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#BF9F73",
+            "radioactivity": 0.02,
+            "toxicity": 0.2
+        }
+    },   
+    {
+        "name": "Nd-Monazite",
+        "formula": "NdPO4",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#BF9F73",
+            "radioactivity": 0.02,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Turquoise",
+        "formula": "CuAl6(PO4)4(OH)8.4H2O",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#40E0D0",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Vivianite",
+        "formula": "Fe3(PO4)2.8H2O",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#4B0082",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Pyromorphite",
+        "formula": "Pb5(PO4)3Cl",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#A5A300",
+            "radioactivity": 0,
+            "toxicity": 0.5
+        }
+    },
+    {
+        "name": "Mimetite",
+        "formula": "Pb5(AsO4)3Cl",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#D6D8A8",
+            "radioactivity": 0,
+            "toxicity": 0.5
+        }
+    },
+    {
+        "name": "Glycerite",
+        "formula": "MgAl(PO4)(OH).7H2O",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#B2B7D2",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Florencite",
+        "formula": "RE3(PO4)5(OH).2H2O",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#E0A65D",
+            "radioactivity": 0.01,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Struvite",
+        "formula": "MgNH4PO4.6H2O",
+        "type": "Phosphate",
+        "properties": {
+            "color": "#D6E8D6",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },{
+        "name": "Barite",
+        "formula": "BaSO4",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#D7D7D7",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Gypsum",
+        "formula": "CaSO4.2H2O",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#FFFFFF",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Anhydrite",
+        "formula": "CaSO4",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#C8C8C8",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Celestine",
+        "formula": "SrSO4",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#A7C6E7",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Epsomite",
+        "formula": "MgSO4.7H2O",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#B0E0E6",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Melanterite",
+        "formula": "FeSO4.7H2O",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#1E90FF",
+            "radioactivity": 0,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Mirabilite",
+        "formula": "Na2SO4.10H2O",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#D8F8F0",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Kieserite",
+        "formula": "MgSO4.H2O",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#F5F5DC",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Thenardite",
+        "formula": "Na2SO4",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#F2F3F4",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Bloedite",
+        "formula": "Na2Mg(SO4)2.4H2O",
+        "type": "Sulfate",
+        "properties": {
+            "color": "#F5F5DC",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Halite",
+        "formula": "NaCl",
+        "type": "Halide",
+        "properties": {
+            "color": "#F0E68C",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Fluorite",
+        "formula": "CaF2",
+        "type": "Halide",
+        "properties": {
+            "color": "#A8D8E0",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Sylvite",
+        "formula": "KCl",
+        "type": "Halide",
+        "properties": {
+            "color": "#C0C0C0",
+            "radioactivity": 0,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Bromellite",
+        "formula": "BeBr2",
+        "type": "Halide",
+        "properties": {
+            "color": "#FFD700",
+            "radioactivity": 0,
+            "toxicity": 0.5
+        }
+    },
+    {
+        "name": "Iodargyrite",
+        "formula": "AgI",
+        "type": "Halide",
+        "properties": {
+            "color": "#C0C0C0",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Carnallite",
+        "formula": "KMgCl3.6H2O",
+        "type": "Halide",
+        "properties": {
+            "color": "#D2B48C",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    },
+    {
+        "name": "Rochelle Salt",
+        "formula": "NaKC4H4O6.4H2O",
+        "type": "Halide",
+        "properties": {
+            "color": "#E6E6FA",
+            "radioactivity": 0,
+            "toxicity": 0
+        }
+    },
+    {
+        "name": "Sideronatrite",
+        "formula": "Na2Fe(SO4)2.4H2O",
+        "type": "Halide",
+        "properties": {
+            "color": "#B22222",
+            "radioactivity": 0,
+            "toxicity": 0.2
+        }
+    },
+    {
+        "name": "Fluorapatite",
+        "formula": "Ca5(PO4)3F",
+        "type": "Halide",
+        "properties": {
+            "color": "#7FFFD4",
+            "radioactivity": 0,
+            "toxicity": 0.1
+        }
+    }
+]

@@ -1,9 +1,0 @@
-Main-Sequence Star Types and Planet Formation Likelihood
-Spectral Type	Description	                        High Likelihood Zone (AU)	Average Likelihood Zone (AU)	Unlikely Zone (AU)
-O	            Massive, hot, and luminous stars	0.1 - 1	                            1 - 5	                        > 10
-B	            Hot, blue stars	                    0.1 - 5	                            5 - 15	                        > 30
-A	            White stars, intermediate mass	    0.5 - 10	                        10 - 25	                        > 50
-F	            Slightly cooler than A-type	        1 - 15	                            15 - 30	                        > 50
-G	            Similar to the Sun (G-type)	        1 - 20	                            20 - 50	                        > 100
-K	            Cooler than the Sun	                0.5 - 30	                        30 - 50	                        > 100
-M	            Red dwarfs, low mass	            0.1 - 2	                            2 - 5	                        > 10

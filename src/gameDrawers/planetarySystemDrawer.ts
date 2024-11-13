@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { Planet } from "../astronomicalClasses/planet";
+import { Planet } from "../astronomicalClasses/planets/planet";
 import { BasicGameDrawer, BasicGamerDrawerParams, MeshContainer } from "./basicDrawer";
-import { Star } from "../astronomicalClasses/stars";
+import { Star } from "../astronomicalClasses/stars/stars";
 import { Scaler } from "../scaler/scaler";
 
 
@@ -18,7 +18,6 @@ export class PlanetarySystemDrawer extends BasicGameDrawer {
 		//change the basecolor depending on atmospheric (gasses) and mantle (rock/bio) conditions
 		return new THREE.Color(baseColor.r/255, baseColor.g/255, baseColor.b/255);
 	}
-
 
 	/**
 	 * Given a peakWavelength convert it to a THREE.Color
@@ -73,8 +72,7 @@ export class PlanetarySystemDrawer extends BasicGameDrawer {
     return new THREE.Color(r/255, g/255, b/255);
 	}
 
-
-
+	
 	public drawPlanet(planet: Planet, scaler: Scaler): MeshContainer{
 
     //** CREATE PLANET MESH **
@@ -85,11 +83,13 @@ export class PlanetarySystemDrawer extends BasicGameDrawer {
 		let scaledRadius: number = 0.5;
 		//if planet
 		if(planet.parentBody && (planet.parentBody instanceof Star)) {
-			 scaledDistance = scaler.scaleSysPlanetaryDistances(planet.orbitalDistance)
+			 scaledDistance = scaler.scalePlanetaryOrbit(planet.orbitalDistance)
+			 console.log("Scaled :", planet.name, "orbit from", planet.orbitalDistance, "to ", scaledDistance)
+
 			 scaledRadius = scaler.scaleSysPlanetRadius(planet.earthRadius)
 		//if moon
 		} else if (planet.parentBody && (planet.parentBody instanceof Planet)) {
-			scaledDistance = scaler.scaleSysMoonDistances(planet.orbitalDistance)
+			scaledDistance = scaler.scaleMoonOrbit(planet.orbitalDistance)
 			scaledRadius = scaler.scaleSysMoonRadius(planet.earthRadius)
 		//what the hell is this body error
 		} else {
@@ -98,31 +98,36 @@ export class PlanetarySystemDrawer extends BasicGameDrawer {
 		
 		
 		// CREATE MESH
-    const planetMesh = this.drawSphere(planet.name, scaledRadius, planetColor)
+    	const planetMesh = this.drawSphere(planet.name, scaledRadius, planetColor)
 		//position mesh
 		planetMesh.position.set(scaledDistance, 0, 0)
 		// put in MeshContainer
 		const planetMeshContainer = new MeshContainer(planetMesh, planetColor,scaledDistance, this.onHoverColorShift(planetColor, -0.5))
     
 		//return the container for scene mgmt
-    return planetMeshContainer
+    	return planetMeshContainer
 	}
 
 	public drawStar(star: Star, scaler: Scaler): MeshContainer {
-    //** CREATE STAR MESH **
+    	//** CREATE STAR MESH **
 		const scaledRadius = scaler.scaleSysStarRadius(star.solarRadius)
-    const starColor = this.wavelengthToTHREERGBColor(star.wavelengthPeak)
-    const starMesh = this.drawSphere(star.name, scaledRadius, starColor)
-    // put in MeshContainer
-		const starMechContainer = new MeshContainer(starMesh, starColor,scaler.scaleSysPlanetaryDistances(star.position.r) ,this.onHoverColorShift(starColor, -0.5)) //<----SCALED ORBITAL DISTANCE
+		const starColor = this.wavelengthToTHREERGBColor(star.wavelengthPeak)
+		const starMesh = this.drawSphere(star.name, scaledRadius, starColor)
+		// put in MeshContainer
+		const starMechContainer = new MeshContainer(starMesh, starColor,scaler.scalePlanetaryOrbit(star.position.r) ,this.onHoverColorShift(starColor, -0.5)) //<----SCALED ORBITAL DISTANCE
    	
 		//return
 		return starMechContainer
 
 	}
 
-	public drawScaleGridLines(scaler: Scaler, radius: number){
-		return this.drawCircleOutline(scaler.scaleSysPlanetaryDistances(radius),4*radius,'#b1cdb8')
+	public drawScalePlanetaryGridLine(scaledDistance: number): THREE.LineLoop {
+		const lineLoop = this.drawCircleOutline(scaledDistance, 3 + 2*scaledDistance, '#474646' )	//opacity is set seperately
+		return lineLoop
+	}
+
+	public drawLabels(string: string){
+		return this.drawString(string, -25,5,-5)
 	}
 
 }

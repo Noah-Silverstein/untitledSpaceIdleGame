@@ -1,4 +1,13 @@
 
+//**---------------------------**//
+    GAME THINGS TO DO
+//**--------------------------**//
+
+!STORING INFO VIA COOKIES AND CACHING DATA!
+    when first loading up you'll do a bunch of calculations that need to be stored and then be able to 
+    be retrieved easily rather than calculated again
+---> Read and write MINERAL DATA ON FIRST STARTUP
+
 CHANGE CSS FILES
     change css files to 1 global.css and the rest to xxxxx.modules.css. Modules allow for scoped css and avoids name conflicts
 
@@ -60,6 +69,13 @@ RESEARCH TRE1.
 RETHINK NAMING
 ADD INTERNAL IDs?
 CHECK HARD CODED VARIABLES
+
+---------------MATERIALS -------------------------
+ADD ORES (https://en.wikipedia.org/wiki/Ore)
+-------------------> Possible way to handle mining/extracting resources
+    if specific mineral is available on planet AND extraction method is researched then you can mine for that Ore
+    ---->materials in crust are easier to extract! , mantle and core ore extraction = harder 
+
 
 ASTRONOMICAL BODY
 Currently most things depend on MASS BUT you don't need to pass a mass to initialize astronomical BODY

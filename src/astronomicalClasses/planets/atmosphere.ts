@@ -1,4 +1,4 @@
-import * as UNI from "./globalVars";
+import * as UNI from "../../global/globalVars";
 
 
 
